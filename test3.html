@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Test</title>
+    <style>
+        @import url('//fonts.googleapis.com/earlyaccess/nanumgothiccoding.css');
+        body {
+            font-size: 35px;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Nanum Gothic Coding', monospace;
+        }
+        #textbox {
+            width: 100%;
+            height: 200px;
+            font-size: 25px;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: 'Nanum Gothic Coding', monospace;
+            white-space: pre;
+            outline: none;
+            border: 1px solid #ccc;
+        }
+        #output {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            font-size: 25px;
+            box-sizing: border-box;
+            font-family: 'Nanum Gothic Coding', monospace;
+            white-space: pre-wrap;
+            height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="textbox" placeholder="Enter JavaScript code here..."></textarea>
+    <hr>
+    <div id="output"></div>
+
+    <script>
+        const textbox = document.getElementById('textbox');
+        const output = document.getElementById('output');
+
+        console.log = function(message) {
+            output.innerText += message + '\n';
+        };
+
+        textbox.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                event.preventDefault();
+                try {
+                    eval(textbox.value);
+                } catch (error) {
+                    output.innerText += `Error: ${error.message}\n`;
+                }
+            }
+        });
+
+        textbox.addEventListener('keydown', function(event) {
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            } else if (['(', '{', '\'', '"', '['].includes(event.key)) {
+                event.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                let pair = '';
+                switch(event.key) {
+                    case '(':
+                        pair = '()';
+                        break;
+                    case '{':
+                        pair = '{}';
+                        break;
+                    case '\'':
+                        pair = '\'\'';
+                        break;
+                    case '"':
+                        pair = '""';
+                        break;
+                    case '[':
+                        pair = '[]';
+                        break;
+                }
+                this.value = this.value.substring(0, start) + pair + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 1; // 커서를 중간으로 이동
+            }
+        });
+    </script>
+</body>
+</html>
